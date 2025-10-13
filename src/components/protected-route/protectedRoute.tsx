@@ -1,11 +1,7 @@
-import React from 'react';
+import { useLocation } from 'react-router-dom';
 import { useSelector } from '../../services/store';
-import { Navigate, useLocation } from 'react-router-dom';
-import {
-  getIsAuthLoading,
-  getUserAuthStatus
-} from '../../services/slices/user/userSlice';
-import { Preloader } from '@ui';
+import { Navigate } from 'react-router';
+import { Preloader } from '../ui/preloader';
 
 type ProtectedRouteProps = {
   onlyUnAuth?: boolean;
@@ -13,24 +9,25 @@ type ProtectedRouteProps = {
 };
 
 export const ProtectedRoute = ({
-  onlyUnAuth,
-  children
+  children,
+  onlyUnAuth = false
 }: ProtectedRouteProps) => {
+  const isAuthChecked = useSelector((store) => store.userData.isAuthChecked);
+  const user = useSelector((store) => store.userData.user);
   const location = useLocation();
-  const isAuthenticated = useSelector(getUserAuthStatus);
-  const isDataLoading = useSelector(getIsAuthLoading);
-  if (isDataLoading) {
+  
+  if (!isAuthChecked) {
     return <Preloader />;
   }
 
-  if (!isAuthenticated && !onlyUnAuth) {
-    return <Navigate replace to={'/login'} state={{ from: location }} />;
+  if (onlyUnAuth && user) {
+    const { from } = location.state || { from: { pathname: '/' } };
+    return <Navigate to={from} />;
   }
 
-  if (isAuthenticated && onlyUnAuth) {
-    const from = location.state?.from || { pathname: '/' };
-
-    return <Navigate replace to={from} />;
+  if (!onlyUnAuth && !user) {
+    return <Navigate to='/login' state={{ from: location }} />;
   }
+
   return children;
 };

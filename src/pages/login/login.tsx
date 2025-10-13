@@ -1,36 +1,35 @@
-import { FC, SyntheticEvent, useState } from 'react';
+import { FC, FormEvent, useState } from 'react';
 import { LoginUI } from '@ui-pages';
-import { useDispatch } from '../../services/store';
-import {
-  loginUser,
-  makeLoginUserSuccess
-} from '../../services/slices/user/userSlice';
+import { useDispatch, useSelector } from '../../services/store';
+import { login } from '../../services/slices/userSlice';
 import { useNavigate } from 'react-router-dom';
-import { setCookie } from '../../utils/cookie';
 
 export const Login: FC = () => {
-  const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
   const dispatch = useDispatch();
-  const handleSubmit = (e: SyntheticEvent) => {
+  const navigate = useNavigate();
+  const error = useSelector((state) => state.userData.error);
+  const user = useSelector((state) => state.userData.user);
+
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    dispatch(loginUser({ email, password }))
-      .unwrap()
-      .then((data) => {
-        try {
-          localStorage.setItem('refreshToken', data.refreshToken);
-          setCookie('accessToken', data.accessToken);
-        } catch (err) {
-          return new Error('error');
-        }
+    await dispatch(
+      login({
+        email: email,
+        password: password
       })
-      .then(() => dispatch(makeLoginUserSuccess(true)))
-      .then(() => navigate('/'));
+    );
+
+    if (!error && user) {
+      navigate('/'); // Redirect to home page
+    }
   };
+
   return (
     <LoginUI
-      errorText=''
+      errorText={error!}
       email={email}
       setEmail={setEmail}
       password={password}

@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import styles from './burger-ingredient.module.css';
 
 import {
-  AddButton,
   Counter,
-  CurrencyIcon
+  CurrencyIcon,
+  AddButton
 } from '@zlden/react-developer-burger-ui-components';
 
 import { TBurgerIngredientUIProps } from './type';

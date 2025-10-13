@@ -1,28 +1,29 @@
-import { FC, useEffect, useMemo } from 'react';
-import { TIngredient } from '@utils-types';
+import { FC, useMemo, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import {
-  getOrderByNumber,
-  getOrderByNumberSelector,
-  isSearchSuccessSelector
-} from '../../services/slices/feeds/feedsSlice';
-import { useDispatch, useSelector } from '../../services/store';
-import { getIngredientsData } from '../../services/slices/ingredients/ingredientsSlice';
-import { OrderInfoUI, Preloader } from '@ui';
+import { Preloader } from '../ui/preloader';
+import { OrderInfoUI } from '../ui/order-info';
+import { TIngredient, TOrder } from '@utils-types';
+import { useSelector } from '../../services/store';
+import { getOrderByNumberApi } from '@api';
+
+const initialOrder: TOrder = {
+  _id: '',
+  status: '',
+  name: '',
+  createdAt: '',
+  updatedAt: '',
+  number: 0,
+  ingredients: ['']
+};
 
 export const OrderInfo: FC = () => {
-  /** TODO: взять переменные orderData и ingredients из стора */
-  const currentNumber = Number(useParams().number);
-  const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(getOrderByNumber(currentNumber));
-  }, [dispatch]);
-  const isSearchSuccess = useSelector(isSearchSuccessSelector);
-  const orderData = useSelector(getOrderByNumberSelector);
+  const [orderData, setOrderData] = useState<TOrder>(initialOrder);
 
-  const ingredients: TIngredient[] = useSelector(getIngredientsData);
+  const ingredients: TIngredient[] = useSelector(
+    (state) => state.ingredients.ingredients
+  );
+  const id = useParams().number;
 
-  /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {
     if (!orderData || !ingredients.length) return null;
 
@@ -35,7 +36,9 @@ export const OrderInfo: FC = () => {
     const ingredientsInfo = orderData.ingredients.reduce(
       (acc: TIngredientsWithCount, item) => {
         if (!acc[item]) {
-          const ingredient = ingredients.find((ing) => ing._id === item);
+          const ingredient = ingredients.find(
+            (element) => element._id === item
+          );
           if (ingredient) {
             acc[item] = {
               ...ingredient,
@@ -64,7 +67,13 @@ export const OrderInfo: FC = () => {
     };
   }, [orderData, ingredients]);
 
-  if (!orderInfo || !isSearchSuccess) {
+  useEffect(() => {
+    getOrderByNumberApi(Number(id)).then((data) => {
+      setOrderData(data.orders[0]);
+    });
+  }, []);
+
+  if (!orderInfo) {
     return <Preloader />;
   }
 

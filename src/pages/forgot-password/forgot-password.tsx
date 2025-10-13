@@ -1,6 +1,5 @@
-import { FC, SyntheticEvent, useState } from 'react';
+import { FC, useState, SyntheticEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
-
 import { forgotPasswordApi } from '@api';
 import { ForgotPasswordUI } from '@ui-pages';
 
