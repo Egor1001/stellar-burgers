@@ -1,6 +1,11 @@
+<<<<<<< HEAD
 // src\utils\burger-api.ts
 import { setCookie, getCookie } from './cookie';
 import { TIngredient, TOrder, TOrdersData, TUser } from './types';
+=======
+import { setCookie, getCookie } from './cookie';
+import { TIngredient, TOrder, TUser } from './types';
+>>>>>>> 938b4d3323a03e095b1fb5951ec7a7434af8824a
 
 const URL = process.env.BURGER_API_URL;
 

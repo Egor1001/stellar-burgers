@@ -15,8 +15,13 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-intersection-observer": "^9.4.3",
+<<<<<<< HEAD
     "react-redux": "^9.2.0",
     "react-router-dom": "^6.30.1",
+=======
+    "react-redux": "^9.1.0",
+    "react-router-dom": "^6.22.3",
+>>>>>>> 938b4d3323a03e095b1fb5951ec7a7434af8824a
     "redux-thunk": "^3.1.0",
     "uuid": "^9.0.0",
     "web-vitals": "^2.1.4",
@@ -41,8 +46,13 @@
     "@testing-library/user-event": "^14.5.1",
     "@types/jest": "^29.5.11",
     "@types/node": "^20.10.5",
+<<<<<<< HEAD
     "@types/react": "^18.3.23",
     "@types/react-dom": "^18.3.7",
+=======
+    "@types/react": "^18.2.45",
+    "@types/react-dom": "^18.2.18",
+>>>>>>> 938b4d3323a03e095b1fb5951ec7a7434af8824a
     "@types/react-router-dom": "^5.3.3",
     "@types/react-test-renderer": "^18.0.7",
     "@types/webpack-env": "^1.18.4",
@@ -79,7 +89,10 @@
     "ts-jest": "^29.4.1",
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
+<<<<<<< HEAD
     "typescript": "^5.9.2",
+=======
+>>>>>>> 938b4d3323a03e095b1fb5951ec7a7434af8824a
     "url-loader": "^4.1.1"
   },
   "scripts": {
