@@ -1,20 +1,18 @@
+// src\components\profile-menu\profile-menu.tsx
 import { FC } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { ProfileMenuUI } from '@ui';
-import { useDispatch } from '../../services/store';
-import { userLogout } from '../../services/slices/user/userSlice';
-import { deleteCookie } from '../../utils/cookie';
+import { useDispatch } from '@store';
+import { logoutUserThunk } from '../../services/user/actions';
 
 export const ProfileMenu: FC = () => {
   const { pathname } = useLocation();
   const dispatch = useDispatch();
-  const handleLogout = () =>
-    dispatch(userLogout())
-      .unwrap()
-      .then(() => {
-        deleteCookie('accessToken');
-        localStorage.removeItem('refreshToken');
-      });
+
+  const handleLogout = () => {
+    <Navigate replace to={'/login'} />;
+    dispatch(logoutUserThunk());
+  };
 
   return <ProfileMenuUI handleLogout={handleLogout} pathname={pathname} />;
 };

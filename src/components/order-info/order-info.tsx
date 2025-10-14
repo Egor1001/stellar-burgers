@@ -1,28 +1,30 @@
+// src\components\order-info\order-info.tsx
 import { FC, useEffect, useMemo } from 'react';
+import { Preloader } from '../ui/preloader';
+import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
+import { useDispatch, useSelector } from '@store';
+import { selectIngredients } from '../../services/ingredients/ingredients-slice';
 import { useParams } from 'react-router-dom';
-import {
-  getOrderByNumber,
-  getOrderByNumberSelector,
-  isSearchSuccessSelector
-} from '../../services/slices/feeds/feedsSlice';
-import { useDispatch, useSelector } from '../../services/store';
-import { getIngredientsData } from '../../services/slices/ingredients/ingredientsSlice';
-import { OrderInfoUI, Preloader } from '@ui';
+import { selectOrderByNumber } from '../../services/orders/orders-slice';
+import { getOrderByNumberThunk } from '../../services/orders/actions';
 
+// карточка заказа в модальном окне, при нажатии на заказ в ленте
 export const OrderInfo: FC = () => {
+  const { number } = useParams<{ number: string }>();
+  const orderNumber = Number(number);
+
   /** TODO: взять переменные orderData и ingredients из стора */
-  const currentNumber = Number(useParams().number);
+  const orderData = useSelector(selectOrderByNumber);
+
   const dispatch = useDispatch();
+
   useEffect(() => {
-    dispatch(getOrderByNumber(currentNumber));
-  }, [dispatch]);
-  const isSearchSuccess = useSelector(isSearchSuccessSelector);
-  const orderData = useSelector(getOrderByNumberSelector);
+    dispatch(getOrderByNumberThunk(orderNumber));
+  }, []);
 
-  const ingredients: TIngredient[] = useSelector(getIngredientsData);
+  const ingredients: TIngredient[] = useSelector(selectIngredients);
 
-  /* Готовим данные для отображения */
   const orderInfo = useMemo(() => {
     if (!orderData || !ingredients.length) return null;
 
@@ -64,7 +66,7 @@ export const OrderInfo: FC = () => {
     };
   }, [orderData, ingredients]);
 
-  if (!orderInfo || !isSearchSuccess) {
+  if (!orderInfo) {
     return <Preloader />;
   }
 

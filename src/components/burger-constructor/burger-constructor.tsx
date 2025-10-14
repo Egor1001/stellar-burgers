@@ -1,70 +1,91 @@
-import React, { FC, useMemo } from 'react';
+// src\components\burger-constructor\burger-constructor.tsx
+
+import { FC, useMemo } from 'react';
 import { TConstructorIngredient } from '@utils-types';
 import { BurgerConstructorUI } from '@ui';
-import { useDispatch, useSelector } from '../../services/store';
+
+import { useSelector, useDispatch } from '@store';
 import {
-  getConstructorBun,
-  getConstructorIngredients,
-  resetConstructor
-} from '../../services/slices/burgerConstructor/burgerConstructorSlice';
+  selectNewOrder,
+  selectOrderRequest,
+  setNewOrder
+} from '../../services/orders/orders-slice';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { postUserBurderThunk } from '../../services/orders/actions';
 import {
-  getLastOrder,
-  getOrderRequestStatus,
-  getUserAuthStatus,
-  newUserOrder,
-  setLastOrder
-} from '../../services/slices/user/userSlice';
-import { useNavigate } from 'react-router-dom';
-import { getAllFeeds } from '../../services/slices/feeds/feedsSlice';
+  clearBurger,
+  selectBurgerConstructor
+} from '../../services/constructor/constructor-slice';
+import { selectUser } from '../../services/user/user-slice';
 
 export const BurgerConstructor: FC = () => {
-  const navigate = useNavigate();
-  const isAuthenticated = useSelector(getUserAuthStatus);
-  /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
-  const constructorIngredients = useSelector(getConstructorIngredients);
-  const constructorBun = useSelector(getConstructorBun);
   const dispatch = useDispatch();
-  const constructorItems = {
-    bun: constructorBun,
-    ingredients: constructorIngredients
-  };
-  const orderRequest = useSelector(getOrderRequestStatus);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const user = useSelector(selectUser);
 
-  const orderModalData = useSelector(getLastOrder);
+  const userBurger = useSelector(selectBurgerConstructor);
+
+  // ждем ответа сервера
+  const orderRequest = useSelector(selectOrderRequest);
+  // данные нового заказа
+  const orderModalData = useSelector(selectNewOrder).order;
 
   const onOrderClick = () => {
-    if (!isAuthenticated) {
-      return navigate('/login');
+    if (!userBurger.bun || orderRequest) {
+      return;
     }
-    if (!constructorItems.bun || orderRequest) return;
-    const ingredientsId: string[] = [
-      constructorItems.bun._id,
-      ...constructorItems.ingredients.map(
-        (item: TConstructorIngredient) => item._id
-      )
-    ];
 
-    dispatch(newUserOrder(ingredientsId));
-    dispatch(resetConstructor());
-    dispatch(getAllFeeds());
+    if (!user) {
+      return navigate('/login', {
+        replace: true,
+        state: {
+          from: {
+            ...location,
+            background: location.state?.background,
+            state: null
+          }
+        }
+      });
+    } else {
+      const from = location.state?.from || { pathname: '/' };
+      const backgroundLocation = location.state?.from?.background || null;
+
+      const itemsId = [
+        userBurger.bun._id,
+        ...userBurger.ingredients.map((ingredient) => ingredient._id),
+        userBurger.bun._id
+      ];
+
+      dispatch(postUserBurderThunk(itemsId)).then(() =>
+        dispatch(clearBurger())
+      );
+      return navigate(from, {
+        replace: true,
+        state: { background: backgroundLocation }
+      });
+    }
   };
-  const closeOrderModal = () => dispatch(setLastOrder(null));
+
+  const closeOrderModal = () => {
+    dispatch(setNewOrder(false));
+  };
 
   const price = useMemo(
     () =>
-      (constructorItems.bun ? constructorItems.bun.price * 2 : 0) +
-      constructorItems.ingredients.reduce(
+      (userBurger.bun ? userBurger.bun.price * 2 : 0) +
+      userBurger.ingredients.reduce(
         (s: number, v: TConstructorIngredient) => s + v.price,
         0
       ),
-    [constructorItems]
+    [userBurger]
   );
 
   return (
     <BurgerConstructorUI
       price={price}
       orderRequest={orderRequest}
-      constructorItems={constructorItems}
+      constructorItems={userBurger}
       orderModalData={orderModalData}
       onOrderClick={onOrderClick}
       closeOrderModal={closeOrderModal}

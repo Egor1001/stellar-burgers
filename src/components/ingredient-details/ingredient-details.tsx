@@ -1,19 +1,16 @@
 import { FC } from 'react';
-import { IngredientDetailsUI, Preloader } from '@ui';
-import { useLocation } from 'react-router-dom';
-import { useSelector } from '../../services/store';
-import { getIngredientsData } from '../../services/slices/ingredients/ingredientsSlice';
-import { TIngredient } from '@utils-types';
+import { Preloader } from '../ui/preloader';
+import { IngredientDetailsUI } from '../ui/ingredient-details';
+import { useSelector } from '@store';
+import { useParams } from 'react-router-dom';
+import { selectIngredients } from '../../services/ingredients/ingredients-slice';
 
 export const IngredientDetails: FC = () => {
-  /** TODO: взять переменную из стора */
-  const location = useLocation();
-  const ingredients = useSelector(getIngredientsData);
-  const ingredientToFind = location.pathname.replace('/ingredients/', '');
+  const id = String(Object.values(useParams()));
 
-  const ingredientData: TIngredient = ingredients.find(
-    (ingredient) => ingredient._id === ingredientToFind
-  )!;
+  const ingredientData = useSelector(selectIngredients).find(
+    (ingredient) => ingredient._id === id
+  );
 
   if (!ingredientData) {
     return <Preloader />;

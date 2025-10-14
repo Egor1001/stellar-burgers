@@ -1,11 +1,12 @@
+// src\components\ui\burger-ingredient\burger-ingredient.tsx
 import React, { FC, memo } from 'react';
 import { Link } from 'react-router-dom';
 import styles from './burger-ingredient.module.css';
 
 import {
-  AddButton,
   Counter,
-  CurrencyIcon
+  CurrencyIcon,
+  AddButton
 } from '@zlden/react-developer-burger-ui-components';
 
 import { TBurgerIngredientUIProps } from './type';
@@ -27,7 +28,12 @@ export const BurgerIngredientUI: FC<TBurgerIngredientUIProps> = memo(
             <p className='text text_type_digits-default mr-2'>{price}</p>
             <CurrencyIcon type='primary' />
           </div>
-          <p className={`text text_type_main-default ${styles.text}`}>{name}</p>
+          <p
+            data-testid='ingredient_name'
+            className={`text text_type_main-default ${styles.text}`}
+          >
+            {name}
+          </p>
         </Link>
         <AddButton
           text='Добавить'
