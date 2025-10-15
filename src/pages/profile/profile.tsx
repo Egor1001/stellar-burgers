@@ -1,18 +1,19 @@
+import { useDispatch, useSelector } from '@store';
 import { ProfileUI } from '@ui-pages';
 import { FC, SyntheticEvent, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from '../../services/store';
-import { getUser, updateUserData } from '../../services/slices/user/userSlice';
+import { updateUserThunk } from '../../services/user/actions';
+import { TRegisterData } from '@api';
+import { selectUser } from '../../services/user/user-slice';
 
 export const Profile: FC = () => {
-  /** TODO: взять переменную из стора */
   const dispatch = useDispatch();
-  const userData = useSelector(getUser);
-  const user = {
-    name: userData.name,
-    email: userData.email
-  };
 
-  const [formValue, setFormValue] = useState({
+  /** TODO: взять переменную из стора */
+  const user = useSelector(selectUser);
+  if (!user) return null;
+
+  // const [formValue, setFormValue] = useState({
+  const [formValue, setFormValue] = useState<Partial<TRegisterData>>({
     name: user.name,
     email: user.email,
     password: ''
@@ -24,7 +25,7 @@ export const Profile: FC = () => {
       name: user?.name || '',
       email: user?.email || ''
     }));
-  }, [userData]);
+  }, [user]);
 
   const isFormChanged =
     formValue.name !== user?.name ||
@@ -32,8 +33,8 @@ export const Profile: FC = () => {
     !!formValue.password;
 
   const handleSubmit = (e: SyntheticEvent) => {
-    dispatch(updateUserData(formValue));
     e.preventDefault();
+    dispatch(updateUserThunk(formValue));
   };
 
   const handleCancel = (e: SyntheticEvent) => {
@@ -54,7 +55,11 @@ export const Profile: FC = () => {
 
   return (
     <ProfileUI
-      formValue={formValue}
+      formValue={{
+        name: formValue.name || '',
+        email: formValue.email || '',
+        password: formValue.password || ''
+      }}
       isFormChanged={isFormChanged}
       handleCancel={handleCancel}
       handleSubmit={handleSubmit}

@@ -2,8 +2,12 @@
   margin: 0 auto;
   width: 640px;
 }
+
 .number {
   text-align: center;
+  font-family: 'Iceland', sans-serif;
+  font-size: 28px;
+  line-height: 24px;
 }
 
 .status {
@@ -71,6 +75,7 @@
   justify-content: flex-start;
   align-items: center;
 }
+
 .total {
   margin-left: auto;
 }

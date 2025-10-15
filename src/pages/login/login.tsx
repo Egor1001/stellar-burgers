@@ -1,33 +1,24 @@
 import { FC, SyntheticEvent, useState } from 'react';
 import { LoginUI } from '@ui-pages';
-import { useDispatch } from '../../services/store';
-import {
-  loginUser,
-  makeLoginUserSuccess
-} from '../../services/slices/user/userSlice';
-import { useNavigate } from 'react-router-dom';
-import { setCookie } from '../../utils/cookie';
+import { useDispatch, useSelector } from '@store';
+import { loginUserThunk } from '../../services/user/actions';
+import { selectUserLoading } from '../../services/user/user-slice';
+import { Preloader } from '@ui';
 
 export const Login: FC = () => {
-  const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('artem812@mail.ru');
+  const [password, setPassword] = useState('123456789');
   const dispatch = useDispatch();
+
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
-    dispatch(loginUser({ email, password }))
-      .unwrap()
-      .then((data) => {
-        try {
-          localStorage.setItem('refreshToken', data.refreshToken);
-          setCookie('accessToken', data.accessToken);
-        } catch (err) {
-          return new Error('error');
-        }
-      })
-      .then(() => dispatch(makeLoginUserSuccess(true)))
-      .then(() => navigate('/'));
+    dispatch(loginUserThunk({ email, password }));
   };
+
+  // это как-то не видно, что срабатывает
+  const loading = useSelector(selectUserLoading);
+  if (loading) return <Preloader />;
+
   return (
     <LoginUI
       errorText=''

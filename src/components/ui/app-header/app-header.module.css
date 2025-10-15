@@ -35,3 +35,9 @@
   align-items: center;
   margin: 0 auto;
 }
+.active {
+  color: white;
+}
+.link {
+  transition: color 0.2s ease;
+}

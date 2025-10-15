@@ -1,26 +1,20 @@
-import { FC, useEffect, useMemo, useRef, useState } from 'react';
+// src\components\burger-ingredients\burger-ingredients.tsx
+
+import { useState, useRef, useEffect, FC } from 'react';
 import { useInView } from 'react-intersection-observer';
 
-import { TTabMode } from '@utils-types';
-import { BurgerIngredientsUI } from '@ui';
-import { useSelector } from '../../services/store';
-import { getIngredientsData } from '../../services/slices/ingredients/ingredientsSlice';
+import { TIngredient, TTabMode } from '@utils-types';
+import { BurgerIngredientsUI } from '../ui/burger-ingredients';
+import { useSelector } from '@store';
+import { selectIngredients } from '../../services/ingredients/ingredients-slice';
 
 export const BurgerIngredients: FC = () => {
-  /** TODO: взять переменные из стора */
-  const ingredients = useSelector(getIngredientsData);
-  const buns = useMemo(
-    () => ingredients.filter((ingredient) => ingredient.type === 'bun'),
-    [ingredients]
-  );
-  const mains = useMemo(
-    () => ingredients.filter((ingredient) => ingredient.type === 'main'),
-    [ingredients]
-  );
-  const sauces = useMemo(
-    () => ingredients.filter((ingredient) => ingredient.type === 'sauce'),
-    [ingredients]
-  );
+  const ingredients: TIngredient[] = useSelector(selectIngredients);
+
+  // Разделяем ингредиенты по типу
+  const buns = ingredients.filter((ing: TIngredient) => ing.type === 'bun');
+  const mains = ingredients.filter((ing: TIngredient) => ing.type === 'main');
+  const sauces = ingredients.filter((ing: TIngredient) => ing.type === 'sauce');
 
   const [currentTab, setCurrentTab] = useState<TTabMode>('bun');
   const titleBunRef = useRef<HTMLHeadingElement>(null);
