@@ -69,5 +69,5 @@ describe('postUserBurderThunk', () => {
       orderRequest: false,
       error: 'Ошибка отправки заказа'
     });
-  });  
+  });
 });

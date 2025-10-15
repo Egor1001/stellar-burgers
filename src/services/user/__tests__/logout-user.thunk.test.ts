@@ -9,9 +9,9 @@ describe('logoutUserThunk', () => {
 
     Object.defineProperty(global, 'localStorage', {
       value: {
-        removeItem: jest.fn(),
+        removeItem: jest.fn()
       },
-      writable: true,
+      writable: true
     });
   });
 
@@ -22,7 +22,7 @@ describe('logoutUserThunk', () => {
     expect(state).toEqual({
       ...initialState,
       loading: true,
-      error: null,
+      error: null
     });
   });
 
@@ -30,14 +30,14 @@ describe('logoutUserThunk', () => {
     const action = { type: logoutUserThunk.fulfilled.type };
     const prevState = {
       ...initialState,
-      user: { email: 'user@mail.com', name: 'User' },
+      user: { email: 'user@mail.com', name: 'User' }
     };
     const state = userReducer(prevState, action);
 
     expect(state).toEqual({
       ...initialState,
       loading: false,
-      user: null,
+      user: null
     });
 
     expect(localStorage.removeItem).toHaveBeenCalledWith('refreshToken');
@@ -46,14 +46,14 @@ describe('logoutUserThunk', () => {
   it('rejected → loading: false, error = payload', () => {
     const action = {
       type: logoutUserThunk.rejected.type,
-      payload: 'Ошибка выхода из системы',
+      payload: 'Ошибка выхода из системы'
     };
     const state = userReducer(initialState, action);
 
     expect(state).toEqual({
       ...initialState,
       loading: false,
-      error: 'Ошибка выхода из системы',
+      error: 'Ошибка выхода из системы'
     });
   });
 });

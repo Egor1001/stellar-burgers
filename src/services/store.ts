@@ -1,8 +1,5 @@
-<<<<<<< HEAD
 // src\services\store.ts
 
-=======
->>>>>>> 938b4d3323a03e095b1fb5951ec7a7434af8824a
 import { configureStore } from '@reduxjs/toolkit';
 
 import {
@@ -10,19 +7,14 @@ import {
   useDispatch as dispatchHook,
   useSelector as selectorHook
 } from 'react-redux';
-<<<<<<< HEAD
 import { rootReducer } from './reducers';
-=======
-
-import { rootReducer } from './rootReducer';
->>>>>>> 938b4d3323a03e095b1fb5951ec7a7434af8824a
 
 const store = configureStore({
   reducer: rootReducer,
   devTools: process.env.NODE_ENV !== 'production'
 });
 
-export type RootState = ReturnType<typeof store.getState>;
+export type RootState = ReturnType<typeof rootReducer>;
 
 export type AppDispatch = typeof store.dispatch;
 

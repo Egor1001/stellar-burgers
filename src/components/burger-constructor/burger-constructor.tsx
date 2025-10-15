@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 // src\components\burger-constructor\burger-constructor.tsx
 
 import { FC, useMemo } from 'react';
@@ -81,70 +80,13 @@ export const BurgerConstructor: FC = () => {
       ),
     [userBurger]
   );
-=======
-import { FC, useMemo, useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { TConstructorIngredient } from '@utils-types';
-import { BurgerConstructorUI } from '@ui';
-import { useSelector, useDispatch } from '../../services/store';
-import {
-  newBurgerOrder,
-  clearOrder
-} from '../../services/slices/newOrderSlice';
-import { clearConstructor } from '../../services/slices/burgerConstructorSlice';
-
-export const BurgerConstructor: FC = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  const userIsAuth = useSelector((state) => state.userData.isAuthChecked);
-  const constructorItems = useSelector((state) => state.burgerConstructor);
-  const { orderRequest, order } = useSelector((state) => state.newOrder);
-
-  const price = useMemo(() => {
-    return (
-      (constructorItems.bun ? constructorItems.bun.price * 2 : 0) +
-      constructorItems.ingredients.reduce(
-        (sum: number, ingredient: TConstructorIngredient) =>
-          sum + ingredient.price,
-        0
-      )
-    );
-  }, [constructorItems]);
-
-  const onOrderClick = useCallback(() => {
-    if (!userIsAuth) {
-      navigate('/login');
-    }
-    
-    if (constructorItems.bun && constructorItems.ingredients.length > 0) {
-      const dataToOrder = [
-        constructorItems.bun._id,
-        ...constructorItems.ingredients.map((ingredient) => ingredient._id),
-        constructorItems.bun._id
-      ];
-      dispatch(newBurgerOrder(dataToOrder));
-    }
-  }, [userIsAuth, constructorItems, dispatch, navigate]);
-
-  const closeOrderModal = (() => {
-    dispatch(clearOrder());
-    dispatch(clearConstructor());
-    navigate('/');
-  });
->>>>>>> 938b4d3323a03e095b1fb5951ec7a7434af8824a
 
   return (
     <BurgerConstructorUI
       price={price}
       orderRequest={orderRequest}
-<<<<<<< HEAD
       constructorItems={userBurger}
       orderModalData={orderModalData}
-=======
-      constructorItems={constructorItems}
-      orderModalData={order}
->>>>>>> 938b4d3323a03e095b1fb5951ec7a7434af8824a
       onOrderClick={onOrderClick}
       closeOrderModal={closeOrderModal}
     />

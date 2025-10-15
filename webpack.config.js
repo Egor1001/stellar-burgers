@@ -49,8 +49,7 @@ module.exports = {
   },
   plugins: [
     new ESLintPlugin({
-      extensions: ['.js', '.jsx', '.ts', '.tsx'],
-      emitWarning: false, // Add this line to stop emitting warnings
+      extensions: ['.js', '.jsx', '.ts', '.tsx']
     }),
     new HtmlWebpackPlugin({
       template: './public/index.html'

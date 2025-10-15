@@ -1,13 +1,12 @@
 // src\services\user\__tests__\login-user.thunk.test.ts
 
-
 import { loginUserThunk } from '../actions';
 import { userReducer, initialState } from '../user-slice';
 import { testLoginResponse } from '../../../constants/test-user';
 import { setCookie } from '../../../utils/cookie';
 
 jest.mock('../../../utils/cookie', () => ({
-  setCookie: jest.fn(),
+  setCookie: jest.fn()
 }));
 
 describe('loginUserThunk', () => {
@@ -25,14 +24,14 @@ describe('loginUserThunk', () => {
     expect(state).toEqual({
       ...initialState,
       loading: true,
-      error: null,
+      error: null
     });
   });
 
   it('fulfilled → сохраняет пользователя, токены, isAuthChecked: true', () => {
     const action = {
       type: loginUserThunk.fulfilled.type,
-      payload: testLoginResponse,
+      payload: testLoginResponse
     };
 
     const state = userReducer(initialState, action);
@@ -51,14 +50,14 @@ describe('loginUserThunk', () => {
       ...initialState,
       loading: false,
       user: testLoginResponse.user,
-      isAuthChecked: true,
+      isAuthChecked: true
     });
   });
 
   it('rejected → loading: false, error = payload', () => {
     const action = {
       type: loginUserThunk.rejected.type,
-      payload: 'Ошибка входа',
+      payload: 'Ошибка входа'
     };
 
     const state = userReducer(initialState, action);
@@ -66,11 +65,10 @@ describe('loginUserThunk', () => {
     expect(state).toEqual({
       ...initialState,
       loading: false,
-      error: 'Ошибка входа',
+      error: 'Ошибка входа'
     });
   });
 });
-
 
 // import { loginUserThunk } from '../actions';
 // import { userReducer, initialState } from '../user-slice';
